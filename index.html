@@ -1,1 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Infinity Times</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #eae5d8;
+    --paper-dim: #ded7c4;
+    --ink: #201d17;
+    --ink-soft: #4a453b;
+    --rule: #b9b09a;
+    --wax: #8a2a20;
+    --wax-dim: #b25a4d;
+    --gold: #97742f;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: 'PT Serif', serif; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--wax); color: var(--paper); }
+  a{ color: inherit; }
+  .wrap{ max-width: 760px; margin: 0 auto; padding: 28px 20px 80px; }
+  .masthead{ text-align:center; padding-top: 8px; }
+  .kicker{ font-family:'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); display:flex; justify-content:space-between; border-bottom: 1px solid var(--rule); padding-bottom: 8px; margin-bottom: 14px; }
+  .nameplate{ font-family: 'Fraunces', serif; font-optical-sizing: auto; font-weight: 700; font-size: clamp(40px, 9vw, 68px); letter-spacing: -0.01em; line-height: 0.95; margin: 6px 0 2px; }
+  .tagline{ font-family:'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--ink-soft); text-transform: uppercase; margin-bottom: 14px; }
+  .loop-rule{ width: 100%; height: 26px; display:block; margin: 6px 0 22px; }
+  .loop-rule path{ fill:none; stroke: var(--ink); stroke-width: 1.4; }
+  .composer-toggle-row{ display:flex; justify-content:center; margin-bottom: 26px; }
+  .btn{ font-family:'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 11px 20px; cursor: pointer; transition: background 0.15s ease, transform 0.1s ease; }
+  .btn:hover{ background: var(--wax); }
+  .btn:active{ transform: translateY(1px); }
+  .btn:focus-visible{ outline: 2px solid var(--wax); outline-offset: 2px; }
+  .btn.secondary{ background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .btn.secondary:hover{ background: var(--ink); color: var(--paper); }
+  .composer{ border: 1px solid var(--ink); padding: 22px; margin-bottom: 40px; background: var(--paper-dim); display:none; }
+  .composer.open{ display:block; }
+  .composer h2{ font-family:'Fraunces', serif; font-size: 20px; margin: 0 0 16px; font-weight: 600; }
+  .field{ margin-bottom: 14px; }
+  .field label{ display:block; font-family:'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 5px; }
+  .field input, .field textarea{ width:100%; font-family:'PT Serif', serif; font-size: 15px; background: var(--paper); border: 1px solid var(--rule); padding: 9px 10px; color: var(--ink); }
+  .field input:focus, .field textarea:focus{ outline: none; border-color: var(--ink); }
+  .field textarea{ resize: vertical; min-height: 130px; line-height: 1.5; }
+  .composer-actions{ display:flex; gap:10px; justify-content:flex-end; }
+  .status-msg{ font-family:'IBM Plex Mono', monospace; font-size: 11px; color: var(--gold); margin-top: 8px; min-height: 14px; }
+  .section-label{ font-family:'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-soft); border-bottom: 1px solid var(--rule); padding-bottom: 6px; margin-bottom: 22px; }
+  .empty{ font-family:'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); text-align:center; padding: 50px 10px; border: 1px dashed var(--rule); }
+  .article{ border-bottom: 1px solid var(--rule); padding: 26px 0; }
+  .article:first-of-type{ padding-top: 0; }
+  .article-head{ display:flex; justify-content: space-between; align-items: flex-start; gap: 14px; cursor: pointer; }
+  .article-title{ font-family:'Fraunces', serif; font-weight: 600; font-size: 24px; line-height: 1.15; margin: 0 0 8px; }
+  .byline{ font-family:'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); letter-spacing: 0.03em; }
+  .byline .wax{ color: var(--wax); }
+  .odometer{ flex: 0 0 auto; text-align:center; font-family:'IBM Plex Mono', monospace; padding: 6px 10px; border: 1px solid var(--ink); min-width: 58px; }
+  .odometer .n{ font-size: 17px; font-weight: 600; letter-spacing: 0.02em; display:block; }
+  .odometer .l{ font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); display:block; margin-top: 1px; }
+  .excerpt{ margin-top: 10px; color: var(--ink-soft); line-height: 1.55; }
+  .body-full{ display:none; margin-top: 14px; line-height: 1.7; white-space: pre-wrap; border-top: 1px dotted var(--rule); padding-top: 14px; }
+  .article.expanded .body-full{ display:block; }
+  .article.expanded .excerpt{ display:none; }
+  .read-hint{ font-family:'IBM Plex Mono', monospace; font-size: 10px; color: var(--wax-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 8px; }
+  footer{ text-align:center; font-family:'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-soft); letter-spacing: 0.08em; margin-top: 50px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <div class="kicker">
+      <span id="today"></span>
+      <span>Vol. I &mdash; No Limit</span>
+    </div>
+    <div class="nameplate">THE INFINITY TIMES</div>
+    <div class="tagline">Every story, told without end</div>
+    <svg class="loop-rule" viewBox="0 0 700 26" preserveAspectRatio="none">
+      <path d="M 175 13 C 175 -2, 245 -2, 245 13 C 245 28, 105 28, 105 13 C 105 -2, 175 -2, 175 13 Z
+               M 525 13 C 525 -2, 455 -2, 455 13 C 455 28, 595 28, 595 13 C 595 -2, 525 -2, 525 13 Z"/>
+      <path d="M 245 13 L 455 13"/>
+    </svg>
+  </div>
 
+  <div class="composer-toggle-row">
+    <button class="btn" id="toggleComposer">Write an article</button>
+  </div>
+
+  <div class="composer" id="composer">
+    <h2>File a new story</h2>
+    <div class="field">
+      <label for="f-title">Headline</label>
+      <input id="f-title" type="text" maxlength="120" placeholder="What happened?">
+    </div>
+    <div class="field">
+      <label for="f-author">Byline</label>
+      <input id="f-author" type="text" maxlength="60" placeholder="Your name">
+    </div>
+    <div class="field">
+      <label for="f-body">Story</label>
+      <textarea id="f-body" placeholder="Write the full article here..."></textarea>
+    </div>
+    <div class="composer-actions">
+      <button class="btn secondary" id="cancelPost">Cancel</button>
+      <button class="btn" id="submitPost">Publish</button>
+    </div>
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+
+  <div class="section-label">Front Page</div>
+  <div id="feed"></div>
+
+  <footer>Published on your device</footer>
+</div>
+
+<script>
+(function(){
+  document.getElementById('today').textContent = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  const composer = document.getElementById('composer');
+  const toggleBtn = document.getElementById('toggleComposer');
+  const cancelBtn = document.getElementById('cancelPost');
+  const submitBtn = document.getElementById('submitPost');
+  const statusMsg = document.getElementById('statusMsg');
+  const feedEl = document.getElementById('feed');
+
+  toggleBtn.addEventListener('click', () => {
+    composer.classList.toggle('open');
+    if(composer.classList.contains('open')) document.getElementById('f-title').focus();
+  });
+  cancelBtn.addEventListener('click', () => { composer.classList.remove('open'); clearForm(); });
+
+  function clearForm(){
+    document.getElementById('f-title').value = '';
+    document.getElementById('f-author').value = '';
+    document.getElementById('f-body').value = '';
+    statusMsg.textContent = '';
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function excerptOf(text){
+    const clean = text.trim().replace(/\s+/g, ' ');
+    return clean.length > 180 ? clean.slice(0, 180) + '...' : clean;
+  }
+
+  const viewedThisSession = new Set();
+
+  function loadIndex(){
+    try{ return JSON.parse(localStorage.getItem('article-index') || '[]'); }
+    catch(e){ return []; }
+  }
+  function saveIndex(ids){ localStorage.setItem('article-index', JSON.stringify(ids)); }
+  function loadArticle(id){
+    try{ const raw = localStorage.getItem('article:' + id); return raw ? JSON.parse(raw) : null; }
+    catch(e){ return null; }
+  }
+  function saveArticle(article){ localStorage.setItem('article:' + article.id, JSON.stringify(article)); }
+
+  function renderEmpty(){
+    feedEl.innerHTML = '<div class="empty">No stories filed yet. Be the first byline in this edition.</div>';
+  }
+
+  function renderArticles(articles){
+    if(articles.length === 0){ renderEmpty(); return; }
+    feedEl.innerHTML = '';
+    articles.forEach(article => {
+      const el = document.createElement('div');
+      el.className = 'article';
+      el.dataset.id = article.id;
+      el.innerHTML = `
+        <div class="article-head">
+          <div>
+            <h3 class="article-title">${escapeHtml(article.title)}</h3>
+            <div class="byline">By <span class="wax">${escapeHtml(article.author || 'Staff Writer')}</span> &middot; ${escapeHtml(article.date)}</div>
+            <div class="excerpt">${escapeHtml(excerptOf(article.body))}</div>
+            <div class="body-full">${escapeHtml(article.body)}</div>
+            <div class="read-hint">${article.expanded ? 'Click to collapse' : 'Click to read the full story'}</div>
+          </div>
+          <div class="odometer">
+            <span class="n" data-views>${article.views}</span>
+            <span class="l">Views</span>
+          </div>
+        </div>
+      `;
+      el.querySelector('.article-head').addEventListener('click', () => onArticleClick(article.id, el));
+      feedEl.appendChild(el);
+    });
+  }
+
+  function onArticleClick(id, el){
+    const isExpanded = el.classList.contains('expanded');
+    el.classList.toggle('expanded');
+    el.querySelector('.read-hint').textContent = el.classList.contains('expanded') ? 'Click to collapse' : 'Click to read the full story';
+
+    if(!isExpanded &&
